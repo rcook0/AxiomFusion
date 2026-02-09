@@ -1,0 +1,13 @@
+state Acc v 1 { hi:float = 0 lo:float = 1e9 }
+input sl:float = 200
+input tp:float = 400
+
+on tick {
+  reduce Acc.hi = bid using max
+  reduce Acc.lo = bid using min
+}
+
+signal long = close > Acc.hi
+on bar {
+  if long { trade.enter_long(qty=0.1, sl_points=sl, tp_points=tp, tag="TB") }
+}
