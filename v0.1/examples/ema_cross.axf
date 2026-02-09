@@ -1,0 +1,20 @@
+input fast:int = 20
+input slow:int = 50
+input risk:float = 0.01
+input sl:float = 300
+input tp:float = 600
+
+let f = ema(close, fast)
+let s = ema(close, slow)
+
+signal long = cross_over(f, s)
+signal short = cross_under(f, s)
+
+on bar {
+  if long {
+    trade.enter_long(qty=risk_qty(risk, sl), sl_points=sl, tp_points=tp, tag="L")
+  }
+  if short {
+    trade.enter_short(qty=risk_qty(risk, sl), sl_points=sl, tp_points=tp, tag="S")
+  }
+}

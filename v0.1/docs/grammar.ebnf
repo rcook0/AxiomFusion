@@ -1,0 +1,50 @@
+# AxiomFusion v0.1 — simplified EBNF
+
+file           := { decl } ;
+
+decl           := input_decl
+               | let_decl
+               | signal_decl
+               | on_bar_block
+               ;
+
+input_decl     := "input" IDENT ":" type "=" expr ;
+let_decl       := "let" IDENT "=" expr ;
+signal_decl    := "signal" IDENT "=" expr ;
+
+on_bar_block   := "on" "bar" block ;
+
+block          := "{" { stmt } "}" ;
+
+stmt           := if_stmt
+               | call_stmt
+               ;
+
+if_stmt        := "if" expr block ;
+call_stmt      := call ;
+
+expr           := logic_or ;
+logic_or       := logic_and { "or" logic_and } ;
+logic_and      := equality { "and" equality } ;
+equality       := compare { ("==" | "!=") compare } ;
+compare        := term { ("<" | "<=" | ">" | ">=") term } ;
+term           := factor { ("+" | "-") factor } ;
+factor         := unary { ("*" | "/" ) unary } ;
+unary          := ("not" | "-" ) unary | postfix ;
+
+postfix        := primary { index | call_suffix } ;
+index          := "[" ( "-" INT ) "]" ;          # history access only; must be negative
+call_suffix    := "(" [ args ] ")" ;
+args           := arg { "," arg } ;
+arg            := ( IDENT "=" expr ) | expr ;
+
+primary        := NUMBER | STRING | "true" | "false" | IDENT ;
+
+type           := "bool" | "int" | "float" | "string"
+               | "series" "<" type ">" ;
+
+# Lexical
+IDENT          := /[A-Za-z_][A-Za-z0-9_]*/ ;
+INT            := /[0-9]+/ ;
+NUMBER         := INT [ "." INT ] ;
+STRING         := /"([^"\\]|\\.)*"/ ;
