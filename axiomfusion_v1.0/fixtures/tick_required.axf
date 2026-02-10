@@ -1,5 +1,0 @@
-# fixture that requires tick
-state S v 1 { hi:float = 0 }
-on tick { reduce S.hi = bid using max }
-signal x = close > 0
-on bar { if x { trade.enter_long(qty=0.1, sl_points=1, tp_points=2, tag="T") } }
