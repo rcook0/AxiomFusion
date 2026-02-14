@@ -1,0 +1,22 @@
+{
+  "name": "RAW_SPREAD",
+  "version": "1",
+  "broker": {
+    "min_lot": 0.01,
+    "lot_step": 0.01,
+    "max_lot": 100.0,
+    "stops_level_points": 30,
+    "freeze_level_points": 0,
+    "deviation_points": 20
+  },
+  "costs": {
+    "spread_points": 0.0,
+    "commission_per_lot_roundturn": 7.0,
+    "slippage_points_mean": 0.0,
+    "slippage_points_std": 0.0
+  },
+  "session": {
+    "enabled": false
+  },
+  "notes": "Generic raw spread + commission (round-turn) profile."
+}

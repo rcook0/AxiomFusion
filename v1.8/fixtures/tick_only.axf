@@ -1,0 +1,3 @@
+on tick {
+  trade.enter_long(qty=0.1, tag="T")
+}

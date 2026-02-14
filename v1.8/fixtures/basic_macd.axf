@@ -1,0 +1,4 @@
+# basic fixture exercising library + trade
+let m = macd_hist(close, 12, 26, 9)
+signal long = m > 0
+on bar { if long { trade.enter_long(qty=0.1, sl_points=1, tp_points=2, tag="L") } }

@@ -1,0 +1,128 @@
+{
+  "version": "1.8.0",
+  "targets": [
+    {
+      "name": "pine.indicator",
+      "allow_caps": [
+        "state",
+        "mtf"
+      ],
+      "hard_deny_caps": [
+        "trade",
+        "tick"
+      ],
+      "semantics": {
+        "tick_event_loop": false,
+        "mtf_alignment": "bar_close",
+        "state_persistence": "bar",
+        "trade_model": "intents_only",
+        "notes": [
+          "Pine indicator: bar-close only; state persists via var across bars but not across reloads."
+        ],
+        "supports_tick": false,
+        "supports_mtf": true,
+        "supports_history_index": true,
+        "account_model": "unknown"
+      },
+      "emitter": "pine",
+      "mode": "indicator",
+      "must_contain": [
+        "//@version=5",
+        "indicator("
+      ],
+      "must_not_contain": [
+        "strategy("
+      ]
+    },
+    {
+      "name": "pine.strategy",
+      "allow_caps": [
+        "trade",
+        "state",
+        "mtf"
+      ],
+      "hard_deny_caps": [
+        "tick"
+      ],
+      "semantics": {
+        "tick_event_loop": false,
+        "mtf_alignment": "bar_close",
+        "state_persistence": "bar",
+        "trade_model": "intents_only",
+        "notes": [
+          "Pine strategy: bar-close only; no true tick handler."
+        ],
+        "supports_tick": false,
+        "supports_mtf": true,
+        "supports_history_index": true,
+        "account_model": "unknown"
+      },
+      "emitter": "pine",
+      "mode": "strategy",
+      "must_contain": [
+        "//@version=5",
+        "strategy("
+      ],
+      "must_not_contain": []
+    },
+    {
+      "name": "mql5.ea",
+      "allow_caps": [
+        "trade",
+        "tick",
+        "state",
+        "mtf"
+      ],
+      "hard_deny_caps": [],
+      "semantics": {
+        "tick_event_loop": true,
+        "mtf_alignment": "any",
+        "state_persistence": "session",
+        "trade_model": "orders",
+        "notes": [
+          "MQL5 EA: OnTick loop; state is in-memory unless persisted."
+        ],
+        "supports_tick": true,
+        "supports_mtf": true,
+        "supports_history_index": true,
+        "account_model": "unknown"
+      },
+      "emitter": "mql5",
+      "mode": "ea",
+      "must_contain": [
+        "#include <Trade/Trade.mqh>",
+        "void OnTick()"
+      ],
+      "must_not_contain": []
+    },
+    {
+      "name": "python.backtest",
+      "allow_caps": [
+        "trade",
+        "tick",
+        "state",
+        "mtf"
+      ],
+      "hard_deny_caps": [],
+      "semantics": {
+        "tick_event_loop": true,
+        "mtf_alignment": "bar_close",
+        "state_persistence": "restart",
+        "trade_model": "intents_only",
+        "notes": [
+          "Python backtest: deterministic policy chain + sandbox."
+        ],
+        "supports_tick": true,
+        "supports_mtf": true,
+        "supports_history_index": true,
+        "account_model": "unknown"
+      },
+      "emitter": "python_rt",
+      "mode": "backtest",
+      "must_contain": [
+        "def run("
+      ],
+      "must_not_contain": []
+    }
+  ]
+}
