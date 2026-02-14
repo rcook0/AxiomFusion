@@ -1,0 +1,112 @@
+{
+  "version": "1.6.0",
+  "targets": [
+    {
+      "name": "pine.indicator",
+      "allow_caps": [
+        "state",
+        "mtf"
+      ],
+      "hard_deny_caps": [
+        "trade",
+        "tick"
+      ],
+      "semantics": {
+        "tick_event_loop": false,
+        "mtf_alignment": "bar_close",
+        "state_persistence": "bar_persistent",
+        "trade_model": "intents_only",
+        "notes": [
+          "Pine indicator: bar-close only; state persists via var across bars but not across reloads."
+        ]
+      },
+      "emitter": "pine",
+      "mode": "indicator",
+      "must_contain": [
+        "//@version=5",
+        "indicator("
+      ],
+      "must_not_contain": [
+        "strategy("
+      ]
+    },
+    {
+      "name": "pine.strategy",
+      "allow_caps": [
+        "trade",
+        "state",
+        "mtf"
+      ],
+      "hard_deny_caps": [
+        "tick"
+      ],
+      "semantics": {
+        "tick_event_loop": false,
+        "mtf_alignment": "bar_close",
+        "state_persistence": "bar_persistent",
+        "trade_model": "native_orders",
+        "notes": [
+          "Pine strategy: bar-close only; no true tick handler."
+        ]
+      },
+      "emitter": "pine",
+      "mode": "strategy",
+      "must_contain": [
+        "//@version=5",
+        "strategy("
+      ],
+      "must_not_contain": []
+    },
+    {
+      "name": "mql5.ea",
+      "allow_caps": [
+        "trade",
+        "tick",
+        "state",
+        "mtf"
+      ],
+      "hard_deny_caps": [],
+      "semantics": {
+        "tick_event_loop": true,
+        "mtf_alignment": "bar_close",
+        "state_persistence": "in_memory",
+        "trade_model": "native_orders",
+        "notes": [
+          "MQL5 EA: OnTick loop; state is in-memory unless persisted."
+        ]
+      },
+      "emitter": "mql5",
+      "mode": "ea",
+      "must_contain": [
+        "#include <Trade/Trade.mqh>",
+        "void OnTick()"
+      ],
+      "must_not_contain": []
+    },
+    {
+      "name": "python.backtest",
+      "allow_caps": [
+        "trade",
+        "tick",
+        "state",
+        "mtf"
+      ],
+      "hard_deny_caps": [],
+      "semantics": {
+        "tick_event_loop": true,
+        "mtf_alignment": "bar_close",
+        "state_persistence": "in_memory",
+        "trade_model": "intents_only",
+        "notes": [
+          "Python backtest: deterministic policy chain + sandbox."
+        ]
+      },
+      "emitter": "python_rt",
+      "mode": "backtest",
+      "must_contain": [
+        "def run("
+      ],
+      "must_not_contain": []
+    }
+  ]
+}

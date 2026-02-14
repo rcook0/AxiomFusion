@@ -1,0 +1,111 @@
+\
+(* AxiomFusion-E (E) surface grammar v1.1 — context-free EBNF *)
+
+program          = { statement } ;
+
+statement        = header_stmt
+                 | define_stmt
+                 | signal_stmt
+                 | state_stmt
+                 | event_stmt
+                 | empty ;
+
+empty            = { " " | "\t" } ( "\n" | "\r\n" ) ;
+
+header_stmt      = target_stmt | profile_stmt | sandbox_stmt ;
+
+target_stmt      = "Target" "is" target_name "." line_end ;
+profile_stmt     = "Execution" "profile" "is" string "." line_end ;
+
+sandbox_stmt     = "Sandbox" "limits" ":" line_end
+                   { sandbox_item } ;
+
+sandbox_item     = indent sandbox_key sandbox_value "." line_end ;
+
+sandbox_key      = "max" "entries" "per" "bar"
+                 | "max" "size"
+                 | "max" "open" "positions" ;
+
+sandbox_value    = number | number "lots" ;
+
+define_stmt      = "Define" ident "as" expr "." line_end ;
+
+signal_stmt      = "Define" ident "signal" "when" cond "." line_end
+                 | "Define" ident "when" cond "." line_end ;
+
+state_stmt       = "Keep" "state" ident "version" integer [ "starting" "at" number ] "." line_end ;
+
+event_stmt       = event_bar | event_tick ;
+
+event_bar        = "On" "each" "bar" "," line_end block ;
+event_tick       = "On" "each" "tick" "," line_end block ;
+
+block            = { action_stmt } ;
+
+action_stmt      = indent if_stmt
+                 | indent trade_stmt
+                 | indent update_stmt
+                 | indent comment ;
+
+comment          = "#" { ? any char ? } line_end ;
+
+if_stmt          = "if" cond "," line_end
+                   { indent2 action_stmt_inner } ;
+
+action_stmt_inner= trade_stmt | update_stmt ;
+
+trade_stmt       = enter_stmt | exit_stmt ;
+
+enter_stmt       = "enter" side "trade"
+                   "with" "size" number
+                   [ "stop" integer "points" ]
+                   [ "take" integer "points" ]
+                   [ "tag" string ]
+                   "." line_end ;
+
+exit_stmt        = "exit" "trade" "tagged" string "." line_end ;
+
+side             = "long" | "short" ;
+
+update_stmt      = "update" ident "to" reducer_expr "." line_end ;
+
+reducer_expr     = "the" "maximum" "of" ident "and" price_ref
+                 | "the" "minimum" "of" ident "and" price_ref ;
+
+price_ref        = "bid" | "ask" | "close" | "open" | "high" | "low" ;
+
+expr             = series_expr | call_expr | number | string | ident ;
+
+series_expr      = "the" integer "-period" ma_kind "of" price_ref
+                 | price_ref "on" "timeframe" timeframe "of" string
+                 | price_ref ;
+
+ma_kind          = "EMA" | "SMA" | "WMA" ;
+
+call_expr        = func_name "(" [ args ] ")" ;
+args             = expr { "," expr } ;
+func_name        = ident ;
+
+cond             = expr relop expr
+                 | ident
+                 | "not" cond
+                 | cond boolop cond ;
+
+relop            = "is" "above" | "is" "below" | ">" | "<" | ">=" | "<=" | "==" | "!="
+                 | "crosses" "above" | "crosses" "below" ;
+
+boolop           = "and" | "or" ;
+
+timeframe        = "1m" | "5m" | "15m" | "30m" | "1h" | "4h" | "1D" | "1W" | "1MN" ;
+
+ident            = letter { letter | digit | "_" } ;
+integer          = digit { digit } ;
+number           = integer [ "." integer ] ;
+string           = '"' { ? any char except '"' ? } '"' ;
+
+indent           = "    " ;
+indent2          = "        " ;
+line_end         = ( "\n" | "\r\n" ) ;
+letter           = "A"…"Z" | "a"…"z" ;
+digit            = "0"…"9" ;
+target_name      = ident { "." ident } ;
